@@ -4,7 +4,7 @@
 
 | Brief criterion | Sprint 1 implementation | Evidence level | Remaining gap |
 |---|---|---|---|
-| Input segment or seed accounts | Segment input, manual sourced prospect, X recent-post search when token supplied | Segment and manual: **implemented / tested**; X: **implemented not live-tested** | Seed-account expansion is not implemented |
+| Input segment or seed accounts | Segment input, manual sourced prospect, X recent-post search when token supplied | Segment and manual: **implemented / tested**; X: **implemented not live-tested** | Seed-account *mention-based* search is available in the Sprint 2 branch (not follower-graph expansion) |
 | Discover relevant AI/robotics people | Synthetic catalog, X recent-post authors with bounded pagination (Sprint 2 branch: at most 2 requests / 20 distinct authors), evidence URLs; keyword score | Sprint 1 demo **tested**; Sprint 2 offline tests **added but CI unverified**; actual X **not live-tested** | Small heuristic; no full account graph expansion; tune against real accounts |
 | Explain why a person fits | Per-person matched keyword rationale and source evidence | **tested** | Scores not calibrated; no relevance benchmark |
 | Draft personalized DMs from real evidence | Deterministic template by default, optional OpenAI API | Template **tested**; OpenAI **not live-tested** | Review for accuracy and helpful tone before send |
