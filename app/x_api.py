@@ -31,7 +31,9 @@ def enabled_send() -> bool:
 
 
 def allowed_ids() -> set[str]:
-    return {p.strip() for p in os.environ.get("X_TEST_ALLOWLIST_IDS", "").split(",") if p.strip()}
+    # Ignore invalid IDs instead of displaying a false "configured" state.
+    return {value for item in os.environ.get("X_TEST_ALLOWLIST_IDS", "").split(",")
+            if (value := item.strip()) and re.fullmatch(r"[0-9]{1,25}", value)}
 
 
 def _headers() -> dict:
