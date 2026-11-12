@@ -290,8 +290,8 @@ def sync_replies(did: str):
         events = x_api.get_replies(recipient)
     except Exception as e:
         raise HTTPException(502, "Could not check X replies; verify token/access") from e
-    # Ignore older messages from the same person; only new messages after
-    # this send are actual replies. Still only first page, explicitly stated.
+    # Ignore messages older than the send. The adapter reads at most two
+    # pages; a successful lookup is not evidence of complete conversation history.
     sent_at = datetime.fromisoformat(d["sent_at"])
     actual_replies = []
     for event in events:
@@ -306,4 +306,4 @@ def sync_replies(did: str):
             db.execute("UPDATE drafts SET state='replied',replied_at=?,updated_at=? WHERE id=?",
                        (core.now(), core.now(), did))
             core.log_action(db, did, "x_reply_detected", "Received sender-matched DM event")
-    return {"found": len(actual_replies), "note": "Sender-matched events AFTER outbound timestamp, first X page only", "events": actual_replies[:10]}
+    return {"found": len(actual_replies), "note": "Sender-matched events AFTER outbound timestamp; at most two X pages scanned (may be incomplete)", "events": actual_replies[:10]}
