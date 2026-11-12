@@ -348,7 +348,8 @@ def sync_replies(did: str):
         p = db.execute("SELECT * FROM prospects WHERE id=?", (d["prospect_id"],)).fetchone()
         recipient = p["x_user_id"]
     try:
-        events = x_api.get_replies(recipient)
+        sync = x_api.get_replies_with_meta(recipient)
+        events = sync["events"]
     except Exception as e:
         raise HTTPException(502, "Could not check X replies; verify token/access") from e
     # Ignore messages older than the send. The adapter reads at most two
@@ -367,4 +368,11 @@ def sync_replies(did: str):
             db.execute("UPDATE drafts SET state='replied',replied_at=?,updated_at=? WHERE id=?",
                        (core.now(), core.now(), did))
             core.log_action(db, did, "x_reply_detected", "Received sender-matched DM event")
-    return {"found": len(actual_replies), "note": "Sender-matched events AFTER outbound timestamp; at most two X pages scanned (may be incomplete)", "events": actual_replies[:10]}
+    return {
+        "found": len(actual_replies),
+        "complete": sync["complete"],
+        "has_more": sync["has_more"],
+        "pages_scanned": sync["pages_scanned"],
+        "note": "Only sender-matched messages AFTER send time. A limited scan is not a complete inbox history." if sync["has_more"] else "No additional page was offered by X.",
+        "events": actual_replies[:10],
+    }
