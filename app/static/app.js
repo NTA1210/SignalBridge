@@ -82,13 +82,17 @@ function renderDetails(){
     await action(`/api/drafts/${d.id}/send`,'POST',{transport:'x_api'},'X API returned a remote event ID');
   };
   if($('simulate-reply'))$('simulate-reply').onclick=()=>action(`/api/drafts/${d.id}/simulate-reply`,'POST',{text:'Happy to discuss this! (Synthetic reply)'},'Synthetic reply recorded');
-  if($('sync-reply'))$('sync-reply').onclick=()=>action(`/api/drafts/${d.id}/sync-replies`,'POST',null,'X DM lookup completed');
+  if($('sync-reply'))$('sync-reply').onclick=async()=>{
+    const result=await action(`/api/drafts/${d.id}/sync-replies`,'POST',null,'X DM check finished');
+    if(result?.has_more)notify('X reply scan was PARTIAL (2-page limit). More history may exist.',true);
+  };
 }
 function renderAudit(){const el=$('audit-items');el.innerHTML=STORE.activity.length?STORE.activity.map(a=>`<div class="audit-row"><span class="audit-icon">✓</span><div class="audit-body"><strong>${esc(a.action.replaceAll('_',' ').replace(/\b\w/g,c=>c.toUpperCase()))}</strong>${esc(short(a.detail,140))}</div><time>${esc(date(a.at))}</time></div>`).join(''):'<div class="empty">Actions will appear here after you create and approve a draft.</div>'}
-async function discover(isX){const segment=$('segment').value.trim();if(segment.length<3){error('Enter at least three characters for a segment');return};const payload=isX?{segment,x_query:$('x-query').value.trim()}:{segment};const endpoint=isX?'/api/discover/x':'/api/discover/demo';const res=await action(endpoint,'POST',payload,isX?'X post authors imported; review evidence':'Synthetic prospects loaded — no X calls');if(res?.prospects?.length){selectedId=res.prospects[0].id;render();$('workflow-section').scrollIntoView({behavior:'smooth',block:'start'})}}
+async function discover(isX){if(isX&&!confirm('This uses up to two authorized X API requests and may consume credits. Continue?'))return;const segment=$('segment').value.trim();if(segment.length<3){error('Enter at least three characters for a segment');return};const payload=isX?{segment,x_query:$('x-query').value.trim()}:{segment};const endpoint=isX?'/api/discover/x':'/api/discover/demo';const res=await action(endpoint,'POST',payload,isX?'X post authors imported; review evidence':'Synthetic prospects loaded — no X calls');if(res?.prospects?.length){selectedId=res.prospects[0].id;render();$('workflow-section').scrollIntoView({behavior:'smooth',block:'start'})}}
 $('run-demo').addEventListener('click',()=>discover(false));
 $('run-x').addEventListener('click',()=>discover(true));
 async function discoverSeeds(){
+  if(!confirm('This searches recent X posts mentioning seeds and may use up to two billed X API requests. Continue?'))return;
   const segment=$('segment').value.trim();
   const handles=$('seed-handles').value.split(',').map(s=>s.trim()).filter(Boolean);
   if(segment.length<3){error('Enter a target segment first');return}
