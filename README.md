@@ -1,8 +1,8 @@
-# SignalBridge — GenAI Fund FDE Take-Home (Sprint 1)
+# SignalBridge — GenAI Fund FDE Take-Home (Sprint 1 + Sprint 2 draft)
 
 **Working local prototype** for researching AI/robotics prospects, scoring evidence, drafting personalized DMs, requiring human approval, sending to a safe mock transport (or an **explicitly enabled, consent-only** X API test account), and tracking sent/reply events without accidental duplicates.
 
-**Current delivery status (Sprint 1):** tested local MVP. **Not submitted** to GenAI Fund. Real X calls have **not** been executed, and the production UX has **not** been authenticated. See [docs/TEST_REPORT.md](docs/TEST_REPORT.md) and [docs/ACCEPTANCE_MATRIX.md](docs/ACCEPTANCE_MATRIX.md).
+**Current delivery status:** Sprint 1 local MVP + Sprint 2 improvements on a [draft PR](https://github.com/NTA1210/SignalBridge/pull/1). **Not submitted** to GenAI Fund. Real X calls have **not** been executed, and the production UX has **not** been authenticated. Sprint 1 historically reported 16/16 offline tests; Sprint 2 tests are committed but have **not yet been verified passing** because GitHub Actions jobs failed before any recorded step. See [docs/TEST_REPORT.md](docs/TEST_REPORT.md) and [docs/ACCEPTANCE_MATRIX.md](docs/ACCEPTANCE_MATRIX.md).
 
 ## 1. Run in under 15 minutes
 
@@ -38,13 +38,13 @@ python scripts/smoke_demo.py
 
 ## 3. Real sourced prospects and X adapter
 
-The **Advanced** panel accepts a **manually supplied** prospect and a source/evidence statement, or an **X recent-post search query**. Manual inputs are labeled as user-supplied, **not verified** by the app. X discovery uses `GET /2/tweets/search/recent` and displays post evidence URLs, not a claim to search the entire X user directory.
+The **Advanced** panel accepts a **manually supplied** prospect and source/evidence statement, an **X recent-post search query**, or up to three **seed handles** for public posts that mention those handles (seed-mention search, **not** follower-network expansion). Manual inputs are labeled as user-supplied, **not verified** by the app. X discovery uses `GET /2/tweets/search/recent` and displays post evidence URLs, not a claim to search the entire X user directory.
 
 The application includes an X API v2 adapter using documented endpoints:
 
-- Search recent posts: `GET /2/tweets/search/recent` (authors become prospective contacts).
+- Search recent posts: `GET /2/tweets/search/recent` (authors become prospective contacts). Search is capped at **two requests / 20 unique authors per operation**, and may consume X API credits. Seed-mention search uses the same capped official endpoint.
 - Send an approved DM: `POST /2/dm_conversations/with/:participant_id/messages`.
-- Check replies from one consenting recipient: `GET /2/dm_conversations/with/:participant_id/dm_events` (first page only, newer than recorded send time).
+- Check replies from one consenting recipient: `GET /2/dm_conversations/with/:participant_id/dm_events` (at most two pages, only matching senders newer than recorded send time; API response explicitly reports incomplete pagination).
 
 **Never use X browser automation, unofficial scraping or unapproved keys.** To enable these optional features, obtain a legitimate **OAuth 2.0 PKCE user-context token**, with `dm.write`, `dm.read`, `tweet.read`, `users.read` scopes and any required credits/rate limit. Store that token **server-side only** in `.env`; never paste it into the browser, GitHub or submission.
 
@@ -54,6 +54,8 @@ X_ENABLE_LIVE_SEND=false
 X_USER_ACCESS_TOKEN=your_authorized_user_token
 X_TEST_ALLOWLIST_IDS=12345678901
 ```
+
+Configuring a token is **not** proof of valid authorization or successful X delivery. The UI distinguishes MOCK from user-configured-but-unverified X mode and displays separate mock/X send totals. For read operations the UI asks for confirmation before potentially billable X API calls.
 
 When the recipient is demonstrably yours or has explicitly consented **and** the numeric X ID is allowlisted, set `X_ENABLE_LIVE_SEND=true`. The selected prospect must have `consent_confirmed=true` in the application. The operator must still review/approve each exact message and confirm one more time before the real API call. **No batch sending / no cold outreach.** No API credentials, credits or consent have been provided for this project; the live path has not been tested with X.
 
@@ -79,7 +81,7 @@ This sends the prospect's name, role, bio and evidence to OpenAI's API. Only act
 python -m pytest -q
 ```
 
-The suite tests HTTP workflow, demo discovery, evidence grounding, mandatory approval, repeat/different-campaign recipient locks, unsafe X mode disabled by default, an allowlist/consent gate, ambiguous timeouts and official X API URL structures **with monkeypatched transport only**. No tests contact real X or OpenAI.
+The test suite includes the 16 historical Sprint 1 cases plus Sprint 2 offline regressions for X pagination, origin/host policy, seed discovery, relevance scoring and explicit sync completeness. **All real X calls are monkeypatched.** As of this draft, the new tests have not been confirmed passing: hosted CI jobs failed with no recorded steps; see [Sprint 2 plan](docs/SPRINT2_AUDIT_AND_PLAN.md). Run `python -m pytest -q` locally and share the output before claiming a pass. No tests contact real X or OpenAI.
 
 ## 6. Code layout
 
@@ -103,7 +105,7 @@ The suite tests HTTP workflow, demo discovery, evidence grounding, mandatory app
 - **No automated conversation campaigns.** One approved outbound per recipient, by design.
 - **No hosted demo/video supplied yet.** Source is runnable; submission packaging will depend on operator testing.
 
-See [docs/ACCEPTANCE_MATRIX.md](docs/ACCEPTANCE_MATRIX.md) before making any claim to HR.
+See [docs/ACCEPTANCE_MATRIX.md](docs/ACCEPTANCE_MATRIX.md), [docs/SPRINT2_AUDIT_AND_PLAN.md](docs/SPRINT2_AUDIT_AND_PLAN.md) and [docs/ONE_PAGE_WRITEUP_SPRINT2_DRAFT.md](docs/ONE_PAGE_WRITEUP_SPRINT2_DRAFT.md) before making any claim to HR.
 
 ## 8. Submission requirements and deadline
 
