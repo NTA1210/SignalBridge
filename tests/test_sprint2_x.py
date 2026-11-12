@@ -130,3 +130,82 @@ def test_untrusted_host_is_rejected():
     with TestClient(app) as c:
         response = c.get("/healthz", headers={"Host": "untrusted.example"})
         assert response.status_code == 400
+
+
+
+def test_reply_meta_marks_bounded_result_incomplete(monkeypatch):
+    monkeypatch.setenv("X_ENABLE_READ", "true")
+    calls = []
+
+    def paginated(method, url, **kwargs):
+        calls.append(kwargs["params"])
+        return {
+            "data": [{"id": str(len(calls)), "sender_id": "123",
+                      "event_type": "MessageCreate", "text": "Hello"}],
+            "meta": {"next_token": f"next-{len(calls)}"},
+        }
+
+    monkeypatch.setattr(x_api, "_request", paginated)
+    result = x_api.get_replies_with_meta("123")
+    assert result["pages_scanned"] == 2
+    assert result["has_more"] is True
+    assert result["complete"] is False
+    assert len(result["events"]) == 2
+
+
+def test_reply_meta_marks_exhausted_page_complete(monkeypatch):
+    monkeypatch.setenv("X_ENABLE_READ", "true")
+    monkeypatch.setattr(x_api, "_request", lambda *a, **k: {
+        "data": [{"id": "1", "sender_id": "123", "event_type": "MessageCreate"}],
+        "meta": {},
+    })
+    result = x_api.get_replies_with_meta("123")
+    assert result["pages_scanned"] == 1
+    assert result["complete"] is True
+    assert result["has_more"] is False
+
+
+def test_real_transport_stub_reports_partial_reply_sync(tmp_path, monkeypatch):
+    """No outgoing network: transport and reply scan are both monkeypatched."""
+    from datetime import datetime, timedelta, timezone
+    from fastapi.testclient import TestClient
+    from app.main import app
+
+    monkeypatch.setenv("DATABASE_PATH", str(tmp_path / "sync.sqlite3"))
+    monkeypatch.setenv("AI_PROVIDER", "template")
+    monkeypatch.setenv("X_ENABLE_READ", "true")
+    monkeypatch.setenv("X_ENABLE_LIVE_SEND", "true")
+    monkeypatch.setenv("X_USER_ACCESS_TOKEN", "fake-not-live")
+    monkeypatch.setenv("X_TEST_ALLOWLIST_IDS", "123")
+    monkeypatch.setattr(x_api, "send_dm", lambda *a: {
+        "remote_event_id": "fixture_event", "remote_conversation_id": "fixture_conv",
+    })
+    def mock_sync(*a):
+        after = (datetime.now(timezone.utc) + timedelta(seconds=2)).isoformat()
+        return {
+            "events": [{"created_at": after, "text": "Yes", "sender_id": "123"}],
+            "pages_scanned": 2, "complete": False, "has_more": True,
+        }
+    monkeypatch.setattr(x_api, "get_replies_with_meta", mock_sync)
+    headers = {"X-Local-Operator": "signalbridge-local"}
+    with TestClient(app) as c:
+        def post(path, data):
+            return c.post(path, json=data, headers=headers)
+        campaign = post("/api/campaigns", {"segment": "robotics"}).json()
+        person = post("/api/prospects", {
+            "campaign_id": campaign["campaign_id"], "display_name": "Test Participant",
+            "handle": "consentedtest", "x_user_id": "123",
+            "role": "Robotics builder",
+            "evidence_text": "Builds test robots with consent.", "consent_confirmed": True,
+        }).json()
+        dm = post("/api/drafts", {"prospect_id": person["id"]}).json()
+        assert post(f"/api/drafts/{dm['id']}/approve", {}).status_code == 200
+        sent = post(f"/api/drafts/{dm['id']}/send", {"transport": "x_api"})
+        assert sent.status_code == 200
+        assert sent.json()["transport"] == "x_api"
+        sync = post(f"/api/drafts/{dm['id']}/sync-replies", {})
+        assert sync.status_code == 200, sync.text
+        assert sync.json()["found"] == 1
+        assert sync.json()["has_more"] is True
+        assert sync.json()["complete"] is False
+        assert c.get("/api/state").json()["drafts"][0]["state"] == "replied"
