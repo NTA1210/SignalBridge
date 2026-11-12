@@ -30,11 +30,19 @@ Optional Docker: `cp .env.example .env && docker compose up --build` (host port 
 6. Click **Simulate consenting reply**. The status and audit trail update to **Replied**.
 7. Refresh the browser; state remains in the SQLite database `outreach.db` (which is gitignored).
 
-The CLI smoke check repeats the same critical path:
+For a network-free, temporary-database smoke check that does **not** require a running server:
+
+```bash
+python scripts/verify_offline.py
+```
+
+To repeat the same workflow against a **running** local HTTP server, run:
 
 ```bash
 python scripts/smoke_demo.py
 ```
+
+See [docs/LOCAL_VERIFICATION.md](docs/LOCAL_VERIFICATION.md) for clean-install checks and current CI constraints.
 
 ## 3. Real sourced prospects and X adapter
 
@@ -93,7 +101,8 @@ The test suite includes the 16 historical Sprint 1 cases plus Sprint 2 offline r
 | `app/drafter.py` | Template drafting; optional model-backed drafting |
 | `app/static/*` | UI (HTML/CSS/vanilla JS, deliberately no npm build step) |
 | `tests/test_workflow.py` | Automated offline tests |
-| `scripts/smoke_demo.py` | End-to-end HTTP verification |
+| `scripts/smoke_demo.py` | End-to-end HTTP verification against a running server |
+| `scripts/verify_offline.py` | Isolated, temporary-database ASGI verification, no cloud calls |
 | `docs/*` | Architecture, acceptance gaps, demo script, handoff and plan |
 
 ## 7. Trade-offs (important)
