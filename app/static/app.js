@@ -86,6 +86,17 @@ function renderAudit(){const el=$('audit-items');el.innerHTML=STORE.activity.len
 async function discover(isX){const segment=$('segment').value.trim();if(segment.length<3){error('Enter at least three characters for a segment');return};const payload=isX?{segment,x_query:$('x-query').value.trim()}:{segment};const endpoint=isX?'/api/discover/x':'/api/discover/demo';const res=await action(endpoint,'POST',payload,isX?'X post authors imported; review evidence':'Synthetic prospects loaded — no X calls');if(res?.prospects?.length){selectedId=res.prospects[0].id;render();$('workflow-section').scrollIntoView({behavior:'smooth',block:'start'})}}
 $('run-demo').addEventListener('click',()=>discover(false));
 $('run-x').addEventListener('click',()=>discover(true));
+async function discoverSeeds(){
+  const segment=$('segment').value.trim();
+  const handles=$('seed-handles').value.split(',').map(s=>s.trim()).filter(Boolean);
+  if(segment.length<3){error('Enter a target segment first');return}
+  if(handles.length<1||handles.length>3){error('Provide one to three seed handles');return}
+  const result=await action('/api/discover/seeds','POST',{segment,seed_handles:handles},'X seed mentions researched; verify individual evidence');
+  if(result?.prospects?.length){selectedId=result.prospects[0].id;render();$('workflow-section').scrollIntoView({behavior:'smooth',block:'start'})}
+  if(result&&!result.prospects.length)notify('No matching recent post authors found. Try different seeds or segment.');
+}
+$('run-seeds').addEventListener('click',discoverSeeds);
+
 $('nav-audit').addEventListener('click',()=>setTab('audit'));
 $('nav-workspace').addEventListener('click',()=>setTab('workspace'));
 $('manual-form').addEventListener('submit',async e=>{
