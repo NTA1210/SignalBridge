@@ -127,6 +127,12 @@ def send_dm(recipient_id: str, text: str) -> dict:
 
 
 def get_replies(recipient_id: str) -> list[dict]:
+    """Compatibility wrapper: only matched DM events, without sync metadata."""
+    return get_replies_with_meta(recipient_id)["events"]
+
+
+def get_replies_with_meta(recipient_id: str) -> dict:
+    """Bounded DM history; expose whether pagination was exhausted."""
     if not enabled_read():
         raise XUnavailable("X reads disabled")
     if not re.fullmatch(r"\d{1,25}", recipient_id):
@@ -136,11 +142,14 @@ def get_replies(recipient_id: str) -> list[dict]:
     events: list[dict] = []
     next_token = None
     seen_tokens: set[str] = set()
+    pages_scanned = 0
+    has_more = False
     for _ in range(2):
         params = {"dm_event.fields": "created_at,sender_id,text", "max_results": "20"}
         if next_token:
             params["pagination_token"] = next_token
         data = _request("GET", BASE + f"/dm_conversations/with/{recipient_id}/dm_events", params=params)
+        pages_scanned += 1
         if not isinstance(data, dict):
             raise XUnavailable("Malformed X DM response")
         if data.get("errors"):
@@ -149,7 +158,14 @@ def get_replies(recipient_id: str) -> list[dict]:
                       if isinstance(e, dict) and str(e.get("sender_id")) == recipient_id
                       and e.get("event_type", "MessageCreate") == "MessageCreate")
         next_token = data.get("meta", {}).get("next_token")
-        if not isinstance(next_token, str) or not next_token or next_token in seen_tokens:
+        if not isinstance(next_token, str) or not next_token:
+            has_more = False
             break
+        if next_token in seen_tokens:
+            # A token cycle means we cannot claim complete results.
+            has_more = True
+            break
+        has_more = True
         seen_tokens.add(next_token)
-    return events
+    return {"events": events, "pages_scanned": pages_scanned,
+            "has_more": has_more, "complete": not has_more}
