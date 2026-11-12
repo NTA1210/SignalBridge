@@ -29,7 +29,7 @@ Date: 12 November 2026 | Deadline: 17 November 2026, 12:00 Asia/Ho_Chi_Minh
 - [x] Add bounded X discovery/reply read pagination.
 - [x] Add offline tests for pagination, author dedup, sender filter, partial failures, disabled reads.
 - [x] Add offline GitHub Actions matrix (Python 3.10/3.12).
-- [ ] Confirm GitHub Actions jobs finish successfully. On 12 Nov, run https://github.com/NTA1210/SignalBridge/actions/runs/43185101371 reported failure **before any recorded job step** (both Python versions): no pytest output is available; root cause is not established. Inspect Actions account/runner configuration and rerun. Do not claim tests passed.
+- [ ] Confirm GitHub Actions jobs finish successfully. Added `scripts/verify_offline.py` as an independent temporary-DB mock E2E check, and `docs/LOCAL_VERIFICATION.md` as a clean-install runbook. The CI job still fails before a step starts; do not imply PASS. On 12 Nov, run https://github.com/NTA1210/SignalBridge/actions/runs/43185101371 reported failure **before any recorded job step** (both Python versions): no pytest output is available; root cause is not established. Inspect Actions account/runner configuration and rerun. Do not claim tests passed.
 
 ## Batch B (next)
 - [ ] Investigate X permissions and actual user-context access via an operator-owned account; **do not enable live mode by default**. Operator has not provided test-account consent/credentials. Runtime UI now labels configured-but-unverified X mode.
@@ -40,7 +40,7 @@ Date: 12 November 2026 | Deadline: 17 November 2026, 12:00 Asia/Ho_Chi_Minh
 - [ ] Add concurrency stress tests and handle/ID identity reconciliation; existing Sprint 1 alias/ambiguous-timeout tests remain in place. New stubbed real-transport partial reply sync test added.
 
 ## Batch C (submission)
-- [ ] Clean clone + setup within 15 minutes on candidate hardware.
+- [ ] Clean clone + setup within 15 minutes on candidate hardware. Instructions and offline verifier prepared; actual run/timing not yet observed.
 - [ ] Record actual 3–5 minute screen demo (synthetic vs real clearly labeled).
 - [ ] Finalize one-page write-up: workflow, system design, tradeoffs, costs, AI assistance and verification.
 - [ ] Review repository for credentials, user data and documentation truthfulness.
