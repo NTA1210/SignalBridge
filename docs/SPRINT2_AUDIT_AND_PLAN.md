@@ -32,12 +32,12 @@ Date: 12 November 2026 | Deadline: 17 November 2026, 12:00 Asia/Ho_Chi_Minh
 - [ ] Confirm GitHub Actions jobs finish successfully. On 12 Nov, run https://github.com/NTA1210/SignalBridge/actions/runs/43185101371 reported failure **before any recorded job step** (both Python versions): no pytest output is available; root cause is not established. Inspect Actions account/runner configuration and rerun. Do not claim tests passed.
 
 ## Batch B (next)
-- [ ] Investigate X permissions and actual user-context access via an operator-owned account; **do not enable live mode by default**.
-- [ ] Implement seed-account flow with bounded API reads, provenance and cost indicators.
-- [ ] Improve source-based ranking and truthfulness of generated drafts.
-- [ ] Show explicit pagination and incomplete reply-sync states in UI; avoid labeling partial as complete.
+- [ ] Investigate X permissions and actual user-context access via an operator-owned account; **do not enable live mode by default**. Operator has not provided test-account consent/credentials. Runtime UI now labels configured-but-unverified X mode.
+- [x] Implement up to 3 seed-handle **mention-based recent-post search**, explicitly *not* follower expansion, with a 2-request cap and UI cost confirmation. Tests added; run remains unverified.
+- [x] Improve exact-word relevance scoring (including `AI`) to avoid substring false positives; add regression tests. Drafting still needs manual evidence review.
+- [x] Show `pages_scanned`, `has_more` and `complete` for X reply scanning; UI warns of incomplete results. Tests added; live read unverified.
 - [x] Add local trusted-host and cross-origin write restrictions with offline security tests. This is still **not user authentication**.
-- [ ] Test concurrent sends, ambiguous outcomes, handle/ID alias collisions.
+- [ ] Add concurrency stress tests and handle/ID identity reconciliation; existing Sprint 1 alias/ambiguous-timeout tests remain in place. New stubbed real-transport partial reply sync test added.
 
 ## Batch C (submission)
 - [ ] Clean clone + setup within 15 minutes on candidate hardware.
