@@ -108,10 +108,22 @@ def healthz():
 def state():
     with core.connection() as db:
         data = core.snapshot(db)
-    data["config"] = {"mode": "LOCAL DEMO", "x_read_enabled": x_api.enabled_read(),
-                      "x_send_enabled": x_api.enabled_send(),
-                      "x_test_allowlist_count": len(x_api.allowed_ids()),
-                      "ai_provider": os.getenv("AI_PROVIDER", "template")}
+    allowlist_count = len(x_api.allowed_ids())
+    token_present = bool(os.getenv("X_USER_ACCESS_TOKEN", "").strip())
+    send_requested = x_api.enabled_send()
+    # Configured does NOT mean authorized, credited or delivery-verified.
+    x_test_configured = send_requested and token_present and allowlist_count > 0
+    data["config"] = {
+        "mode": "LOCAL X TEST (UNVERIFIED)" if x_test_configured else "LOCAL DEMO",
+        "x_read_enabled": x_api.enabled_read(),
+        "x_send_enabled": x_test_configured,
+        "x_send_requested": send_requested,
+        "x_read_configured": x_api.enabled_read() and token_present,
+        "x_test_allowlist_count": allowlist_count,
+        "x_status": "User-configured test mode; authorization and delivery NOT verified"
+                    if x_test_configured else "Mock safe; no real X delivery",
+        "ai_provider": os.getenv("AI_PROVIDER", "template"),
+    }
     return data
 
 
