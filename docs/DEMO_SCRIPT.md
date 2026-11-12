@@ -1,6 +1,6 @@
 # 3–5 minute demo script (candidate-operated)
 
-**Before recording:** start the server; ensure `X_ENABLE_READ=false` / `X_ENABLE_LIVE_SEND=false`. Set up a fresh local database for a clean demo if desired; do **not** delete prior real-send audit history. Open the app in the browser.
+**Before recording:** use the actual checkout being submitted, start the server and run the test suite; ensure `X_ENABLE_READ=false` / `X_ENABLE_LIVE_SEND=false`. Set up a fresh local database for a clean demo if desired; do **not** delete prior real-send audit history. Open the app in the browser.
 
 | Time | Action on screen | What to say |
 |---|---|---|
