@@ -29,14 +29,14 @@ Date: 12 November 2026 | Deadline: 17 November 2026, 12:00 Asia/Ho_Chi_Minh
 - [x] Add bounded X discovery/reply read pagination.
 - [x] Add offline tests for pagination, author dedup, sender filter, partial failures, disabled reads.
 - [x] Add offline GitHub Actions matrix (Python 3.10/3.12).
-- [ ] Confirm GitHub Actions jobs finish successfully.
+- [ ] Confirm GitHub Actions jobs finish successfully. On 12 Nov, run https://github.com/NTA1210/SignalBridge/actions/runs/43185101371 reported failure **before any recorded job step** (both Python versions): no pytest output is available; root cause is not established. Inspect Actions account/runner configuration and rerun. Do not claim tests passed.
 
 ## Batch B (next)
 - [ ] Investigate X permissions and actual user-context access via an operator-owned account; **do not enable live mode by default**.
 - [ ] Implement seed-account flow with bounded API reads, provenance and cost indicators.
 - [ ] Improve source-based ranking and truthfulness of generated drafts.
 - [ ] Show explicit pagination and incomplete reply-sync states in UI; avoid labeling partial as complete.
-- [ ] Harden local-only origin/host boundaries and add security regression tests.
+- [x] Add local trusted-host and cross-origin write restrictions with offline security tests. This is still **not user authentication**.
 - [ ] Test concurrent sends, ambiguous outcomes, handle/ID alias collisions.
 
 ## Batch C (submission)
