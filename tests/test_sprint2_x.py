@@ -209,3 +209,11 @@ def test_real_transport_stub_reports_partial_reply_sync(tmp_path, monkeypatch):
         assert sync.json()["has_more"] is True
         assert sync.json()["complete"] is False
         assert c.get("/api/state").json()["drafts"][0]["state"] == "replied"
+
+
+
+def test_malformed_allowlist_ids_do_not_enable_real_test(monkeypatch):
+    monkeypatch.setenv("X_TEST_ALLOWLIST_IDS", "bad, ,123,abc-1,123")
+    assert x_api.allowed_ids() == {"123"}
+    monkeypatch.setenv("X_TEST_ALLOWLIST_IDS", "not-numeric")
+    assert x_api.allowed_ids() == set()
