@@ -6,7 +6,7 @@
 flowchart TD
   A[Operator selects segment / seed] --> B{Source selected}
   B -->|Synthetic demo| C[Clearly fictional local catalog]
-  B -->|Authorized X API| D[X recent-post search]
+  B -->|Authorized X API| D[X recent-post search or bounded seed-mention search]
   B -->|Manual source| E[Operator enters evidence and URL]
   C --> F[Prospect scoring with traceable signals]
   D --> F
@@ -50,8 +50,8 @@ SQLite enables durable local tests. For production, migrate to PostgreSQL with t
 
 ## Areas beyond Sprint 1
 
-- Actual end-to-end authenticated X developer account test and handling of real platform 403/429.
+- Actual end-to-end authenticated X developer account test and handling of real platform 403/429. Sprint 2 pagination is at most two read requests per operation; incomplete reply scans are explicitly reported.
 - Full OAuth2 PKCE login/refresh + secrets vault for employer-owned accounts.
-- Seed-account expansion beyond single current-post query, higher quality embeddings and recency ranking.
+- Seed-account graph expansion beyond current seed-mention discovery, higher quality retrieval and calibrated ranking.
 - Fully paginated real DM inbox sync and outbound-reply threading, unsubscribe/safety workflow.
 - Multi-operator access and deployable secure hosted mode.
