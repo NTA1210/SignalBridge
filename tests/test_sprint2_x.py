@@ -100,3 +100,33 @@ def test_x_read_defaults_off(monkeypatch):
     with pytest.raises(x_api.XUnavailable):
         x_api.get_replies("123")
     assert invoked == []
+
+
+
+def test_cross_origin_writes_are_rejected(tmp_path, monkeypatch):
+    """A known public header does not give untrusted web origins write access."""
+    from fastapi.testclient import TestClient
+    from app.main import app
+    monkeypatch.setenv("DATABASE_PATH", str(tmp_path / "origin.sqlite3"))
+    with TestClient(app) as c:
+        headers = {
+            "X-Local-Operator": "signalbridge-local",
+            "Origin": "https://untrusted.example",
+        }
+        response = c.post("/api/discover/demo",
+                          json={"segment": "robotics"}, headers=headers)
+        assert response.status_code == 403
+        assert "Cross-origin" in response.json()["detail"]
+        good = c.post("/api/discover/demo",
+                      json={"segment": "robotics"},
+                      headers={"X-Local-Operator": "signalbridge-local",
+                               "Origin": "http://testserver"})
+        assert good.status_code == 200
+
+
+def test_untrusted_host_is_rejected():
+    from fastapi.testclient import TestClient
+    from app.main import app
+    with TestClient(app) as c:
+        response = c.get("/healthz", headers={"Host": "untrusted.example"})
+        assert response.status_code == 400
