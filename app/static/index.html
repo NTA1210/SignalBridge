@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>SignalBridge · Research-led outreach</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <a href="/" class="brand" aria-label="SignalBridge home"><span class="brand-mark">S<span class="brand-dot">•</span></span><span>signalbridge<span class="brand-small">/ outreach studio</span></span></a>
+    <div class="nav-caption">WORKSPACE</div>
+    <button type="button" class="nav-link active" id="nav-workspace"><span class="nav-icon">◫</span> Prospect workspace <span class="nav-arrow">›</span></button>
+    <button type="button" class="nav-link" id="nav-audit"><span class="nav-icon">▤</span> Delivery audit <span class="nav-arrow">›</span></button>
+    <div class="sidebar-grow"></div>
+    <div class="sidebar-meta">
+      <div class="sidebar-status"><span class="status-light"></span> Local-first workspace</div>
+      <p>Candidate assessment demo<br>GenAI Fund · FDE 2026</p>
+      <div class="sidebar-line"></div>
+      <span>Never auto-send to strangers.<br>Human review is always required.</span>
+    </div>
+  </aside>
+
+  <main class="workspace">
+    <header class="topbar"><div class="crumb">Workspace <span>/</span> Research & outreach</div><div class="top-right"><span id="provider-chip" class="provider-chip">TEMPLATE DRAFTS</span><span class="avatar">TA</span></div></header>
+    <div class="main-content">
+      <div class="hero"><div><div class="eyebrow"><span class="mini-dot"></span> GENAI FUND · WORKING PROTOTYPE</div><h1>Better signals.<br><em>Better conversations.</em></h1><p class="hero-text">Discover relevant AI & robotics builders, ground every message in evidence, and keep every interaction accountable.</p></div><div class="hero-decor"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit-core">✳</div></div></div>
+      <div class="notice"><span class="notice-icon">ⓘ</span><div><strong id="mode-label">Demo data is synthetic.</strong> <span id="mode-desc">Mock sends are saved in SQLite and never leave your computer. Real X API calls are disabled by default.</span></div></div>
+      <section class="metrics" aria-label="Outreach summary">
+        <div class="metric"><span>PROSPECTS RESEARCHED</span><strong id="stat-people">0</strong><small>Evidence-first records</small></div>
+        <div class="metric"><span>NEED YOUR APPROVAL</span><strong id="stat-review">0</strong><small>Messages awaiting review</small></div>
+        <div class="metric"><span>MESSAGES SENT</span><strong id="stat-sent">0</strong><small id="stat-sent-kind">Mock / verified X</small></div>
+        <div class="metric"><span>REPLIES / FOLLOW-UP</span><strong id="stat-replies">0</strong><small>Needs your attention</small></div>
+      </section>
+      <section class="research-card" id="discovery-section">
+        <div class="research-top"><div><div class="eyebrow dark">STEP 01 / PROSPECT DISCOVERY</div><h2>Find the people who matter.</h2><p>Choose a target segment. Demo mode uses fictional profiles; X mode searches actual recent-post authors only when authorized.</p></div><span class="pill pill-quiet">Evidence-backed matching</span></div>
+        <div class="input-row"><label class="field grow"><span>Target segment</span><input id="segment" type="text" maxlength="160" value="Embodied AI robotics" placeholder="e.g. AI developer tools founders"/></label><button id="run-demo" class="btn btn-primary">✳ Discover demo</button></div>
+        <details class="advanced"><summary>Use authorized X API or import a real prospect <span>+</span></summary>
+          <div class="advanced-inner"><div class="input-row"><label class="field grow"><span>Recent post search query (X syntax)</span><input id="x-query" type="text" placeholder="robotics AI -is:retweet lang:en"/></label><button class="btn btn-plain" id="run-x">Search X posts</button></div>
+          <div class="divider-small"></div>
+          <form id="manual-form"><div class="manual-head">Add a sourced prospect manually</div><p class="tiny">Only import information you are allowed to use. Provide specific evidence; never fabricate familiarity.</p><div class="manual-grid"><label class="field"><span>Name</span><input name="display_name" required placeholder="Name from source"/></label><label class="field"><span>X handle</span><input name="handle" required placeholder="username"/></label><label class="field"><span>Role</span><input name="role" required placeholder="Robotics engineer"/></label><label class="field"><span>X numeric user ID (optional)</span><input name="x_user_id" placeholder="Needed for real DM"/></label><label class="field wide"><span>Bio</span><input name="bio" placeholder="Author/source-provided description"/></label><label class="field wide"><span>Specific evidence (required)</span><textarea name="evidence_text" rows="2" required placeholder="A real post/project detail; include a public source URL below"></textarea></label><label class="field wide"><span>Evidence URL</span><input name="evidence_url" placeholder="https://x.com/.../status/..."/></label></div><label class="consent-label"><input name="consent_confirmed" type="checkbox"/> I have explicit consent from this person to send a live test DM.</label><button class="btn btn-plain" type="submit">+ Save prospect</button></form></div>
+        </details>
+      </section>
+      <div id="app-error" role="alert" aria-live="polite" class="error" hidden></div>
+      <section class="two-col" id="workflow-section">
+        <div class="prospects-panel"><div class="section-head"><div><div class="eyebrow dark">STEP 02 / QUALITY OVER VOLUME</div><h2>Prospect queue <span class="count" id="people-count">0</span></h2></div><span class="small-label">Sort: relevance ↓</span></div><div id="prospect-list" class="prospect-list"><div class="empty">Start a discovery to populate the queue.</div></div></div>
+        <div class="detail-panel"><div class="detail-top"><div class="eyebrow dark">STEP 03 / APPROVE & DELIVER</div><span class="pill pill-quiet" id="detail-status">NO SELECTION</span></div><div id="detail-container"><div class="empty detail-empty"><div class="empty-symbol">✳</div><h3>Choose a prospect</h3><p>Inspect their evidence before generating any message.</p></div></div></div>
+      </section>
+      <section class="audit-panel" id="audit-section"><div class="section-head"><div><div class="eyebrow dark">EVENT HISTORY / LOCAL SQLITE</div><h2>Operational audit log</h2></div><span class="pill pill-quiet">Append-only events</span></div><div id="audit-items" class="audit-items"><div class="empty">Nothing sent yet.</div></div></section>
+      <footer class="footer">SignalBridge / FDE take-home · Built for transparent consent-based evaluation · No active campaigns or cold outreach.</footer>
+    </div>
+  </main>
+</div>
+<div id="toast" role="status" aria-live="polite" class="toast" hidden></div>
+</body>
+</html>

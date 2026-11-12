@@ -1,0 +1,9 @@
+.env
+outreach.db
+*.db-wal
+*.db-shm
+__pycache__/
+.pytest_cache/
+.venv/
+*.pyc
+.DS_Store

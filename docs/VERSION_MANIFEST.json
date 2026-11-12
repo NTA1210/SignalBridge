@@ -1,0 +1,142 @@
+{
+  "artifact": "SignalBridge GenAI Fund FDE Sprint 1",
+  "build_date": "2026-11-12",
+  "tests": "16 passed; browser bridge desktop/mobile smoke; real X not tested",
+  "files": [
+    {
+      "path": ".env.example",
+      "bytes": 495,
+      "sha256": "638096dc642875636ecdecca2e0d14cc1b1ffe9ddabbeab4e0939df7a5f12f84"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 86,
+      "sha256": "fdc736016237ba1206d40b41a4b05847d5aceab173cd5f1dbcd19e6e22572738"
+    },
+    {
+      "path": "Dockerfile",
+      "bytes": 291,
+      "sha256": "89d0a882e9f39a252ec1fd579261f677f6ce1bf2e54d5f168c790b3c4397f486"
+    },
+    {
+      "path": "README.md",
+      "bytes": 7512,
+      "sha256": "36c2c2cdc10fe85303310db337b518df2d7e70a4778170a05c8fcb0121b0df89"
+    },
+    {
+      "path": "app/__init__.py",
+      "bytes": 69,
+      "sha256": "dff16e72056829597c55f8f896b8d1b2fdf861c1be01d0636d0a3c4d881caf4f"
+    },
+    {
+      "path": "app/core.py",
+      "bytes": 9875,
+      "sha256": "d0692ff43c8d39428cd88e2ba68fc4787d87887ad19209a945ce17c9c87583d2"
+    },
+    {
+      "path": "app/drafter.py",
+      "bytes": 2000,
+      "sha256": "64c8acaf31eb162e2949fc642d18e4d49032211f6299a498706f59e6f40b8231"
+    },
+    {
+      "path": "app/main.py",
+      "bytes": 14291,
+      "sha256": "e3494ad44e331ee544d2072a792b64e411d33aa4f2a3b4afdd23b362e8a3b5ec"
+    },
+    {
+      "path": "app/static/app.js",
+      "bytes": 11831,
+      "sha256": "24b113dd5ce8ae9b775cb3cf33f3200dbf2e803506df53afae61d636d7771f3f"
+    },
+    {
+      "path": "app/static/index.html",
+      "bytes": 7142,
+      "sha256": "6442185a2ea6c735a097b0381a3297569b388db36e757acf9d7925406e8a8075"
+    },
+    {
+      "path": "app/static/styles.css",
+      "bytes": 12404,
+      "sha256": "3114a8a50c4989c173a09ef4cbd61e04fc083f3d7a93ad00341cb5701c92d03f"
+    },
+    {
+      "path": "app/x_api.py",
+      "bytes": 4292,
+      "sha256": "b8ad2232073b6f84482f93c47ed69d053cb20bcd4558ac9afb8aa6052b67db90"
+    },
+    {
+      "path": "compose.yaml",
+      "bytes": 259,
+      "sha256": "826b052453dfcb3bb34d642f270e8f1606fff6266ad526ec423446d6df954474"
+    },
+    {
+      "path": "docs/ACCEPTANCE_MATRIX.md",
+      "bytes": 2982,
+      "sha256": "1766df66e8635ebc5122a12618adb92edeefa11008cee4504eefd9e2350cb391"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "bytes": 3095,
+      "sha256": "04af5c634c586683a1f8e6843e6fbd7a8c96f7a2e93b2df6bd0a8335ab482ba8"
+    },
+    {
+      "path": "docs/DEMO_SCRIPT.md",
+      "bytes": 2295,
+      "sha256": "dd4305caa4333e89064be086b65fc3808ee7320852c98ba2ea011d98441d2f02"
+    },
+    {
+      "path": "docs/ONE_PAGE_WRITEUP_DRAFT.md",
+      "bytes": 3023,
+      "sha256": "5b90f23f9aba66c9280c84866aebc0d184b259d4cf604e83e0c92f94de3ffd45"
+    },
+    {
+      "path": "docs/SPRINT_PLAN.md",
+      "bytes": 2219,
+      "sha256": "e02483a48b1b0ec888c8e361e415db1f6ec0dffe717bcac31fcd3cc98b9ef38b"
+    },
+    {
+      "path": "docs/SUBMISSION_CHECKLIST.md",
+      "bytes": 2427,
+      "sha256": "2fab7976053b51b59b5cc7d8463f224a2e6920d26699194e13821cb6f271a8aa"
+    },
+    {
+      "path": "docs/TEST_REPORT.md",
+      "bytes": 2344,
+      "sha256": "273aff5261a5f008bc2088966b0be6d17e8e085f308b53cde2465e8c6f2d084e"
+    },
+    {
+      "path": "docs/test-results.txt",
+      "bytes": 99,
+      "sha256": "5f133b4c1a18a8a31a04fd537353e5cb2188c5dfe1712fd1fb2182a7c5067529"
+    },
+    {
+      "path": "docs/ui-mobile-preview.png",
+      "bytes": 209921,
+      "sha256": "977edd44bd05da2008c2286e187273679d569e3516d3815e2fae2f598a535c92"
+    },
+    {
+      "path": "docs/ui-workflow-preview.png",
+      "bytes": 259900,
+      "sha256": "fb28b8af87206c67e672d06a9aa2fba94963e625ac37fad2a01325251dfcde93"
+    },
+    {
+      "path": "requirements-dev.txt",
+      "bytes": 34,
+      "sha256": "8636f9ab1a075be9f3039e2a6471837259c4f36b625bcaf7a3d9a1edd2419c6d"
+    },
+    {
+      "path": "requirements.txt",
+      "bytes": 70,
+      "sha256": "2735856137d8db643c7a2f3d818c33588868c10a5cd0f990fa10a30e5db9a18e"
+    },
+    {
+      "path": "scripts/smoke_demo.py",
+      "bytes": 1222,
+      "sha256": "71650d33b2b31198103c74976cfd278904dc2f848c8ba62c75d19d25edce82de"
+    },
+    {
+      "path": "tests/test_workflow.py",
+      "bytes": 9643,
+      "sha256": "cde46a28f81f003743d6f8cf56f3e9308d418f281c13aa9b8eb47fe7e64f1de7"
+    }
+  ]
+}

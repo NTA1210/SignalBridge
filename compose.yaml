@@ -1,0 +1,13 @@
+services:
+  signalbridge:
+    build: .
+    env_file: .env
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      - DATABASE_PATH=/data/outreach.db
+    volumes:
+      - signalbridge-data:/data
+    restart: unless-stopped
+volumes:
+  signalbridge-data:
