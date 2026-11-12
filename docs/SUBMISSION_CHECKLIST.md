@@ -15,12 +15,12 @@ Deadline from HR: **Tuesday, 17 November 2026, 12:00 PM (GMT+7)**.
 ## Required before submitting
 
 - [ ] Read full HR brief again and resolve any changed instructions.
-- [ ] Run `python -m pytest -q` and `python scripts/smoke_demo.py` from a clean install.
+- [ ] Run `python -m pytest -q` and `python scripts/smoke_demo.py` from a clean install. Sprint 2 Actions attempt failed with **no job steps recorded** (https://github.com/NTA1210/SignalBridge/actions/runs/43185101371); diagnose runner/account configuration and do not claim tests passed.
 - [ ] If possible, test legitimate X access with a consenting account; otherwise clearly state what is mock and why. Never fabricate send event IDs or scrape without permission.
 - [ ] Update one-page write-up with *actual* outcomes and observed API costs/limitations.
 - [ ] Record a genuine 3–5 minute video showing an unedited end-to-end run, errors/limitations and the audit log.
 - [ ] Remove `.env`, `outreach.db`, tokens, private data and other secrets before sharing source.
-- [ ] Publish code to a new **candidate-owned** repository (public/private depending on employer instructions) and verify reviewer can access it. Do not upload as part of an unrelated work repository.
+- [x] Candidate-owned public repository created: https://github.com/NTA1210/SignalBridge. Before submission verify HR can access the intended branch and files. Sprint 2 is currently on draft PR #1; do not imply it is merged.
 - [ ] Check setup on a clean laptop under 15 minutes, including dependency install.
 - [ ] Submit repo/hosted link + setup steps, video and one-page explanation by **17/11 noon GMT+7**.
 - [ ] Verify outgoing application email/ATS receipt and update tracker only after real submission.
