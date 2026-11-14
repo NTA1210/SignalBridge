@@ -50,32 +50,58 @@ def search_people(query: str) -> list[dict]:
         raise XUnavailable("X reads are disabled; set X_ENABLE_READ=true after authorizing API access.")
     if not query or len(query) > 280:
         raise ValueError("Search query must be 1–280 characters")
-    payload = _request("GET", BASE + "/tweets/search/recent", params={
-        "query": query,
-        "expansions": "author_id",
-        "tweet.fields": "created_at,author_id",
-        "user.fields": "name,username,description",
-        "max_results": "10",
-    })
-    users = {u["id"]: u for u in payload.get("includes", {}).get("users", [])}
+    # Fixed upper bounds make API usage predictable: maximum 2 requests and
+    # 20 unique people. No recursive crawling or uncapped credit spending.
     candidates: dict[str, dict] = {}
-    for post in payload.get("data", []):
-        author = users.get(post.get("author_id"))
-        if not author or not author.get("username"):
-            continue
-        handle = author["username"]
-        pid = author["id"]
-        if pid in candidates:
-            continue
-        candidates[pid] = {
-            "display_name": author.get("name") or handle,
-            "handle": handle, "x_user_id": pid,
-            "role": "X account posting about the target segment",
-            "bio": author.get("description", ""),
-            "evidence_text": (post.get("text") or "")[:900],
-            "evidence_url": f"https://x.com/{handle}/status/{post['id']}",
-            "source_kind": "x_api_recent_post",
+    next_token = None
+    seen_tokens: set[str] = set()
+    for _ in range(2):
+        params = {
+            "query": query,
+            "expansions": "author_id",
+            "tweet.fields": "created_at,author_id",
+            "user.fields": "name,username,description",
+            "max_results": "10",
         }
+        if next_token:
+            params["pagination_token"] = next_token
+        payload = _request("GET", BASE + "/tweets/search/recent", params=params)
+        if not isinstance(payload, dict):
+            raise XUnavailable("Malformed X search response")
+        if payload.get("errors"):
+            raise XUnavailable("X returned incomplete search data; check API permissions")
+        users = {
+            str(u["id"]): u
+            for u in payload.get("includes", {}).get("users", [])
+            if isinstance(u, dict) and u.get("id")
+        }
+        for post in payload.get("data", []):
+            if not isinstance(post, dict):
+                continue
+            pid = str(post.get("author_id", ""))
+            author = users.get(pid)
+            if not author or not author.get("username") or not post.get("id") or not post.get("text"):
+                continue
+            handle = str(author["username"])
+            if pid in candidates:
+                continue
+            candidates[pid] = {
+                "display_name": author.get("name") or handle,
+                "handle": handle, "x_user_id": pid,
+                "role": "X account posting about the target segment",
+                "bio": author.get("description", ""),
+                "evidence_text": str(post["text"])[:900],
+                "evidence_url": f"https://x.com/{handle}/status/{post['id']}",
+                "source_kind": "x_api_recent_post",
+            }
+            if len(candidates) >= 20:
+                break
+        if len(candidates) >= 20:
+            break
+        next_token = payload.get("meta", {}).get("next_token")
+        if not isinstance(next_token, str) or not next_token or next_token in seen_tokens:
+            break
+        seen_tokens.add(next_token)
     return list(candidates.values())
 
 
