@@ -15,6 +15,7 @@ from typing import Literal
 from fastapi import FastAPI, HTTPException, Header, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 
@@ -28,6 +29,9 @@ async def lifespan(app):
     yield
 
 app = FastAPI(title="SignalBridge — FDE Outreach MVP", version="0.1.0", docs_url="/api/docs", lifespan=lifespan)
+# Local-only host allowlist blocks access through arbitrary virtual hosts and
+# reduces DNS-rebinding risk. This is not a replacement for authentication.
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1", "testserver"])
 STATIC = Path(__file__).resolve().parent / "static"
 app.mount("/static", StaticFiles(directory=str(STATIC)), name="static")
 
@@ -35,8 +39,14 @@ app.mount("/static", StaticFiles(directory=str(STATIC)), name="static")
 @app.middleware("http")
 async def prevent_cross_site_writes(request: Request, call_next):
     if request.method in {"POST", "PUT", "PATCH", "DELETE"} and request.url.path.startswith("/api/"):
+        from fastapi.responses import JSONResponse
+        # The known custom header is only a CSRF friction measure, not a secret.
+        # Reject cross-origin browser requests even if they carry that header.
+        expected_origin = f"{request.url.scheme}://{request.headers.get('host', '')}"
+        origin = request.headers.get("origin")
+        if origin is not None and origin != expected_origin:
+            return JSONResponse({"detail": "Cross-origin write rejected"}, status_code=403)
         if request.headers.get("X-Local-Operator") != "signalbridge-local":
-            from fastapi.responses import JSONResponse
             return JSONResponse({"detail": "Only explicit local operator actions allowed"}, status_code=403)
     return await call_next(request)
 
