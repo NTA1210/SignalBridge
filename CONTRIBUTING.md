@@ -9,6 +9,7 @@ A PR represents **one independently reviewable outcome**. Implement only the min
 2. State **goal**, **out of scope**, and **acceptance criteria** before coding. Add a narrowly scoped test that fails before the fix where applicable.
 3. Keep patches focused. Prefer 1–3 deliberate commits; avoid unrelated code formatting and churn. Treat ~300 changed lines as a review checkpoint, not an absolute quota (a vertical slice may require UI + API + tests).
 4. Run affected tests and the complete test suite before requesting review. Distinguish `not run`, `blocked`, `failed`, and `passed` explicitly.
+   **No automatic CI runs on pull requests.** Verify locally and attach the actual commands, SHA, environment and terminal results. Optional GitHub Actions can be launched manually but are not a merge requirement.
 5. Open a **Draft** PR while implementation/test evidence is incomplete. In the PR body include what changed, why, how it was verified, risks and known limitations.
 6. If separate features touch the same file, keep different branches based on `main`; merge in a defined order and rebase/update later PRs as needed. Do not sneak unrelated changes into a shared branch.
 7. Merge only after review + verified test evidence. Prefer **squash** for a concise main history. Never force-push the default branch or merge solely because GitHub labels a PR mergeable.
