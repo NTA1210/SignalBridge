@@ -11,9 +11,9 @@
 - [ ] 
 - [ ] No regression of Sprint 1 behavior
 
-## Verification evidence
-- Command(s):
-- Commit SHA / Python version:
+## Verification evidence (local tests; automatic PR CI disabled)
+- Command(s) executed locally:
+- Tested commit SHA / Python version:
 - Result: NOT RUN / BLOCKED / FAILED / PASSED
 - Manual UI/HTTP verification:
 
@@ -30,7 +30,7 @@
 - Depends on:
 - Relevant brief requirement:
 
-## Merge gate
+## Merge gate (no hosted CI required)
 - [ ] Reviewed focused diff
 - [ ] Relevant tests passed with evidence
 - [ ] Mainline regression tests passed
