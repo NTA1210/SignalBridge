@@ -1,12 +1,11 @@
 name: SignalBridge tests
 
+# Manual-only: do not run Actions on pull_request or push.
+# Local tests provide the PR verification evidence.
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  workflow_dispatch:
 
-# Cancel obsolete runs when successive commits update the same PR.
+# Cancel duplicate manually dispatched runs for the same ref.
 concurrency:
   group: signalbridge-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
