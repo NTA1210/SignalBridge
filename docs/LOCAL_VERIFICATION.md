@@ -60,11 +60,18 @@ Only attempt when a controlled X account and explicitly consenting test recipien
 
 No controlled X credentials or live test evidence have been supplied yet.
 
-## GitHub Actions blocker (12 Nov 2026)
+## CI policy: manual only
 
-The workflow exists, but [Actions jobs on PR #1](https://github.com/NTA1210/SignalBridge/actions) fail before the first recorded step. This is **not evidence that pytest failed**. The cause has not been verified; no runner steps or job logs were returned. Check repository Actions settings and owner billing/spending restrictions in GitHub settings; standard hosted runners are free for public repositories, but account or runner provisioning blocks can still occur. Avoid repeatedly rerunning identical jobs until the configuration issue is resolved.
+Pull requests do **not** trigger GitHub Actions. The optional workflow is dispatched manually from the Actions tab and is **not required for PR review or merge**. On this account, GitHub previously refused to start hosted jobs with the message "account is locked due to a billing issue", even though the displayed monthly usage was fully discounted. This is an account-side block, not evidence of a Python or pytest failure.
 
-If hosted CI remains blocked, attach the real local stdout/test count to the PR and mark hosted CI explicitly unavailable. Do not merge based only on historical Sprint 1 test results.
+Use locally recorded verification instead:
+
+```bash
+python scripts/verify_offline.py
+python -m pytest -q
+```
+
+Record the branch and commit SHA, Python version, commands and actual terminal output in each PR. Do not claim tests PASS without execution. Do not enable automatic CI just to bypass the billing issue.
 
 ## Video and submission
 
