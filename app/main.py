@@ -50,6 +50,12 @@ class XDiscovery(BaseModel):
     x_query: str = Field(min_length=3, max_length=280)
 
 
+class SeedDiscovery(BaseModel):
+    """Search recent public posts mentioning seed handles, not followers."""
+    segment: str = Field(min_length=3, max_length=160)
+    seed_handles: list[str] = Field(min_length=1, max_length=3)
+
+
 class NewProspect(BaseModel):
     campaign_id: str
     display_name: str = Field(min_length=2, max_length=100)
@@ -139,6 +145,39 @@ def discover_x(p: XDiscovery):
         found = [dict(core.store_prospect(db, cid, **c)) for c in candidates]
     return {"campaign_id": cid, "prospects": found,
             "disclosure": "Authors found from X recent posts; evidence comes from those posts, review manually"}
+
+
+@app.post("/api/discover/seeds")
+def discover_seeds(p: SeedDiscovery):
+    # This uses only the official recent-search endpoint, not followers,
+    # graph crawling or scraping. Returned authors are not automatically
+    # verified members of a seed account's community.
+    try:
+        handles = list(dict.fromkeys(core.normalize_handle(h) for h in p.seed_handles))
+        # Avoid user-controlled X operator injection. Keep topic relevance
+        # transparent; at most four alphabetic topic terms in the query.
+        import re
+        terms = list(dict.fromkeys(re.findall(r"[a-z0-9]{2,24}", p.segment.lower())))[:4]
+        if not terms:
+            raise ValueError("Segment needs at least one keyword")
+        mentions = " OR ".join("@" + handle for handle in handles)
+        topic = " OR ".join(terms)
+        query = f"({mentions}) ({topic}) -is:retweet"
+        if len(query) > 280:
+            raise ValueError("Seed search exceeds X query limit")
+        candidates = x_api.search_people(query)
+    except (x_api.XUnavailable, ValueError) as e:
+        raise HTTPException(400, str(e))
+    except Exception as e:
+        raise HTTPException(502, "X seed mention discovery unavailable; check authorized API access") from e
+    with core.connection() as db:
+        cid = core.make_campaign(db, p.segment)
+        found = [dict(core.store_prospect(db, cid, **c)) for c in candidates]
+    return {
+        "campaign_id": cid, "prospects": found, "seed_handles": handles,
+        "strategy": "recent_public_posts_mentioning_seeds",
+        "disclosure": "Recent post authors mentioning provided seeds, NOT follower-network expansion or verified relationships. Human review required.",
+    }
 
 
 @app.post("/api/prospects")
