@@ -1,30 +1,26 @@
-# Final delivery checklist — GenAI Fund
+# GenAI Fund — final candidate delivery checklist
 
-Deadline from HR: **Tuesday, 17 November 2026, 12:00 PM (GMT+7)**.
+**Deadline:** Tuesday, **17 Nov 2026 at 12:00 (GMT+7)**. Confirmation to HR was previously sent. Submission has **not** been sent.
 
-## Complete so far
+## Product and repository
+- [x] Source code on candidate-owned public repository: https://github.com/NTA1210/SignalBridge
+- [x] Seven focused Sprint 2 PRs #2–#8 merged into `main`.
+- [x] README, architecture, local verification runbook, demo script and one-page write-up prepared.
+- [x] Default safe synthetic/Mock mode, explicit human approval, deduplication and audit trail implemented.
+- [ ] Run `python scripts/verify_offline.py` then `python -m pytest -q` from latest `main`; record actual output and Python/commit SHA.
+- [ ] Test the actual browser workflow on a clean setup, including installation under 15 minutes.
+- [ ] Review committed files for secrets/private data (local `.env` and SQLite database must not be included).
 
-- [x] Candidate explicitly confirmed participation to HR on 12/11/2026 (do not send again).
-- [x] Documented the official technical requirements and consent/privacy restrictions.
-- [x] Created local working prototype with synthetic prospect discovery, evidence scoring, drafts, human approval, mock sending, immutable lock on recipient and reply simulation.
-- [x] Added optional official X v2 adapter (not validated with real credentials).
-- [x] Added installation guide, architecture, test suite, demo script and write-up draft.
-- [x] Chromium desktop/mobile UI smoke passed with locally bridged FastAPI backend; zero JavaScript errors.
-- [ ] Independently inspect browser on the user's own machine and repeat end-to-end workflow.
+## External integrations
+- [ ] Only if legally available, verify official X read/send against owned or consenting test accounts. Never contact unconsenting strangers.
+- [x] Otherwise disclose that real X authorization/delivery and optional AI API have **not** been exercised, and use Mock in demonstration.
+- [ ] Verify X access plans, scopes, limits and credit costs for an actual account if relevant; do not invent price figures.
 
-## Required before submitting
+## Required submission
+- [ ] Record and host an actual 3–5 minute end-to-end demo of the running application; use [demo script](DEMO_SCRIPT.md).
+- [x] Draft a concise [one-page explanation](ONE_PAGE_WRITEUP.md) of architecture, trade-offs, costs and AI use.
+- [ ] Replace any unverified test statements in the write-up with real results once verified.
+- [ ] Reply in original HR thread with repository/setup, video URL and one-page explanation by the deadline.
+- [ ] Confirm receipt; only then mark submission delivered.
 
-- [ ] Read full HR brief again and resolve any changed instructions.
-- [ ] Run `python -m pytest -q` and `python scripts/smoke_demo.py` from a clean install.
-- [ ] If possible, test legitimate X access with a consenting account; otherwise clearly state what is mock and why. Never fabricate send event IDs or scrape without permission.
-- [ ] Update one-page write-up with *actual* outcomes and observed API costs/limitations.
-- [ ] Record a genuine 3–5 minute video showing an unedited end-to-end run, errors/limitations and the audit log.
-- [ ] Remove `.env`, `outreach.db`, tokens, private data and other secrets before sharing source.
-- [ ] Publish code to a new **candidate-owned** repository (public/private depending on employer instructions) and verify reviewer can access it. Do not upload as part of an unrelated work repository.
-- [ ] Check setup on a clean laptop under 15 minutes, including dependency install.
-- [ ] Submit repo/hosted link + setup steps, video and one-page explanation by **17/11 noon GMT+7**.
-- [ ] Verify outgoing application email/ATS receipt and update tracker only after real submission.
-
-## Next sessions (suggested)
-
-**12 Nov:** Operator reviews Sprint 1 code/demo and scope. **13–14 Nov:** Validate X developer-access constraints, improve live source evidence and scoring without prohibited scraping. **15 Nov:** Tighten UI and exception paths. **16 Nov:** Candidate screen-records, prepares one-page writeup, retests clean setup. **Before noon 17 Nov:** Submit complete packet and verify.
+**No automatic CI on PRs** (requested); optional manual GitHub Actions may remain unavailable due the account-side billing lock. This does not count as a passing or failing pytest run.

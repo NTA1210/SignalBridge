@@ -6,7 +6,7 @@
 flowchart TD
   A[Operator selects segment / seed] --> B{Source selected}
   B -->|Synthetic demo| C[Clearly fictional local catalog]
-  B -->|Authorized X API| D[X recent-post search]
+  B -->|Authorized X API| D[X recent-post or seed-mention search]
   B -->|Manual source| E[Operator enters evidence and URL]
   C --> F[Prospect scoring with traceable signals]
   D --> F
@@ -48,10 +48,10 @@ SQLite enables durable local tests. For production, migrate to PostgreSQL with t
 6. **No scraping or browser bot.** Only the official X API if authorized.
 7. **Local only.** No production login. Restrict server to 127.0.0.1.
 
-## Areas beyond Sprint 1
+## Remaining gaps after integrated Sprint 2
 
 - Actual end-to-end authenticated X developer account test and handling of real platform 403/429.
 - Full OAuth2 PKCE login/refresh + secrets vault for employer-owned accounts.
-- Seed-account expansion beyond single current-post query, higher quality embeddings and recency ranking.
-- Fully paginated real DM inbox sync and outbound-reply threading, unsubscribe/safety workflow.
+- No follower-graph/seed-community expansion: the implemented seed workflow only searches recent posts mentioning the seeds; semantic and recency ranking remain limited.
+- Reply sync is bounded to two pages and may be incomplete; no webhook/backfill, outbound-reply threading or unsubscribe/safety workflow.
 - Multi-operator access and deployable secure hosted mode.
