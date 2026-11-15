@@ -1,16 +1,18 @@
-# 3–5 minute demo script (candidate-operated)
+# SignalBridge — 3–5 minute genuine demo recording script
 
-**Before recording:** start the server; ensure `X_ENABLE_READ=false` / `X_ENABLE_LIVE_SEND=false`. Set up a fresh local database for a clean demo if desired; do **not** delete prior real-send audit history. Open the app in the browser.
+Record the actual local application (not slides or a fake X session). Aim for **4:30–4:55** total. No X credentials or real outbound messages are required for the default safe demonstration.
 
-| Time | Action on screen | What to say |
+**Before recording:** run `python scripts/verify_offline.py` and `python -m pytest -q` and capture genuine output if tests pass. Start `python -m uvicorn app.main:app --host 127.0.0.1 --port 8000`. Ensure `X_ENABLE_LIVE_SEND=false` and `X_ENABLE_READ=false`; use a clean local SQLite demo database, not a database with real outbound history.
+
+| Time | Actual app interaction | Narration |
 |---|---|---|
-| 00:00–00:25 | Dashboard and safety notice | “This is SignalBridge, a narrow, working prototype. Synthetic records are labeled and persist in local SQLite. Sending real X DMs is disabled in this evaluation.” |
-| 00:25–01:00 | Enter `Embodied AI robotics`, click Discover demo | “Target segments are matched against known evidence. Each fictional candidate has a transparent relevance reason; for actual X data there is an optional authorized recent-post search adapter.” |
-| 01:00–01:40 | Select a profile, inspect role/evidence | “Personalization uses a source-specific statement rather than inventing familiarity. For this demo the source is deliberately fictitious.” |
-| 01:40–02:20 | Create a draft, edit, Approve | “An operator must see and approve the exact message; no unattended sending.” |
-| 02:20–02:55 | Send mock, inspect mock event ID, try duplicate | “The send is mocked and explicitly labeled. SQLite reserves the recipient before delivery, so repeat sends are rejected even across campaigns.” |
-| 02:55–03:30 | Simulate reply, inspect dashboard and audit | “Replies update the status and need-attention count. This event is simulated, not a real reply from X.” |
-| 03:30–04:25 | Show `.env.example`, X adapter and test log | “For a real authorized account we use X's official DM endpoint with an OAuth user token, approved-recipient allowlist, explicit consent, and a no-retry policy for ambiguous failures. We did not enable or claim live delivery without credentials.” |
-| 04:25–04:50 | Show test report and known gaps | “The tests cover core reliability. The next increment is real account verification and better semantic targeting while staying within API terms.” |
+| 00:00–00:30 | Home dashboard, mode banner | “SignalBridge is a local, consent-conscious outreach prototype. Default discovery and delivery are explicitly synthetic; no stranger is contacted.” |
+| 00:30–01:00 | Target `Embodied AI robotics` → Discover demo | “The demo loads fictional candidates, scored by transparent keyword evidence. Real X discovery is a separate opt-in API path.” |
+| 01:00–01:35 | Select candidate and inspect evidence and reason | “Each suggestion includes a traceable reason. The demo evidence is fictional; source-supplied or X material requires validation.” |
+| 01:35–02:25 | Create draft → edit → approve | “The deterministic template cites evidence without inventing familiarity, and humans approve the exact message.” |
+| 02:25–03:05 | Mock send and duplicate attempt | “The event is mock-only, persisted locally. A second send is rejected to protect recipients.” |
+| 03:05–03:40 | Simulate reply → audit log → refresh | “Simulated replies change the status and are tracked in SQLite. Refreshing retains the audit record.” |
+| 03:40–04:15 | Open Advanced UI and X test mode documentation | “There is bounded official X recent-post and seed-mention search, plus a consent/allowlist-gated DM adapter. Real X authorization and delivery have not been verified.” |
+| 04:15–04:50 | Show test output (only if really run), README and write-up | “The prototype is designed for quick local setup. We disclose limits, API access requirements, costs, and where human judgment is still needed.” |
 
-**Do not fabricate a recorded X send or suggest demo profiles are real.** If you later obtain valid access, record a separate real test to your own/consenting account and add authenticated proof to the final report.
+**Recording checklist:** captured from a running app; visible Mock labels; no exposed secrets/recipient private data; 3–5 min duration; clear audio or subtitles; hosted viewable link shared in HR submission. If setup/tests fail, fix or state failures instead of fabricating PASS. **A real video has not yet been recorded.**
