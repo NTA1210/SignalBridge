@@ -26,12 +26,14 @@ const statusLabel = state => ({draft:'DRAFT',approved:'APPROVED',sending:'SENDIN
 const statusClass = state => state==='sent'||state==='replied'?'pill-sent':state==='approved'?'pill-approved':state==='uncertain'?'pill-uncertain':'pill-quiet';
 function render(){
   const ds=STORE.drafts,ps=STORE.prospects,conf=STORE.config;
-  $('provider-chip').textContent=(conf.ai_provider==='openai'?'LLM DRAFTS':'TEMPLATE DRAFTS')+' / '+(conf.x_send_enabled?'X ENABLED':'MOCK SAFE');
-  $('mode-label').textContent=conf.x_send_enabled?'Live X transport enabled (restricted).':'Demo mode is synthetic and local by default.';
-  $('mode-desc').textContent=conf.x_send_enabled?'Live sends require your approval, a consent flag and a test-recipient allowlist.':'Mock sends never reach X. A real X adapter exists but is switched off unless you enable it.';
+  $('provider-chip').textContent=(conf.ai_provider==='openai'?'LLM DRAFTS':'TEMPLATE DRAFTS')+' / '+(conf.x_send_enabled?'X TEST CONFIGURED':'MOCK SAFE');
+  $('mode-label').textContent=conf.x_send_enabled?'Local X test configured — NOT delivery-verified.':'Demo mode is synthetic and local by default.';
+  $('mode-desc').textContent=conf.x_send_enabled?'Real sends require authorized X access, recipient consent, allowlist and per-message approval. A configured token does not prove delivery.':'Mock sends never reach X. X read and send are separate opt-in functions; real sends are disabled until test credentials and allowlist are supplied.';
   $('stat-people').textContent=ps.length;
   $('stat-review').textContent=ds.filter(x=>x.state==='draft').length;
-  $('stat-sent').textContent=ds.filter(x=>['sent','replied'].includes(x.state)).length;
+  const completed=ds.filter(x=>['sent','replied'].includes(x.state));
+  $('stat-sent').textContent=completed.length;
+  $('stat-sent-kind').textContent=completed.filter(x=>x.transport==='mock').length+' MOCK / '+completed.filter(x=>x.transport==='x_api').length+' X API';
   $('stat-replies').textContent=ds.filter(x=>x.state==='replied').length;
   $('people-count').textContent=ps.length;
   $('prospect-list').innerHTML=ps.length?ps.map(p=>{
