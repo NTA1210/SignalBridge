@@ -145,9 +145,14 @@ def make_campaign(db: sqlite3.Connection, segment: str) -> str:
 
 
 def rank(segment: str, role: str, bio: str, evidence: str, tags: str = "") -> tuple[int, str]:
-    tokens = set(re.findall(r"[a-z0-9]{3,}", segment.lower())) - {"and", "for", "the", "with", "people"}
-    corpus = (role + " " + bio + " " + evidence + " " + tags).lower()
-    matched = sorted(t for t in tokens if t in corpus)
+    # Match complete words, not substrings ("mouths" != "souths").
+    # Allow short domain tokens such as "AI", which the earlier 3+ regex lost.
+    stopwords = {"and", "for", "the", "with", "people", "from", "using", "who", "work"}
+    tokens = set(re.findall(r"[a-z0-9]{2,}", segment.lower())) - stopwords
+    corpus_words = set(re.findall(
+        r"[a-z0-9]{2,}", " ".join((role, bio, evidence, tags)).lower()
+    ))
+    matched = sorted(tokens & corpus_words)
     score = min(95, 28 + 17 * len(matched) + (8 if len(matched) > 1 else 0))
     if not tokens:
         score = 40
